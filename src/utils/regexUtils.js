@@ -1,0 +1,1 @@
+//Predefined regex patterns for sensitive data

@@ -1,0 +1,1 @@
+//Handles generic log ingestion

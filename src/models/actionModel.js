@@ -1,0 +1,1 @@
+//Shared schema for all actions

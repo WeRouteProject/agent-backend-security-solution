@@ -1,0 +1,1 @@
+//Handles alert-related actions
