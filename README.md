@@ -12,36 +12,67 @@ The backend supports scalable APIs, a modular structure, and a centralized datab
 ---
 
 ## **Features**
+
 ### **Data Loss Prevention (DLP)**
-- Data Discovery
-- Data Classification
-- File Activity Monitoring
-- Policy Enforcement
-- Removable Media Protection
-- File & Document Tracking
-- File Transfer Tracking
-- Content Filtering
-- Cloud Security
+- **Data Discovery**: Identify sensitive information (e.g., PII, PCI DSS, HIPAA data).
+- **Data Classification**: Categorize data based on sensitivity or compliance requirements.
+- **File Activity Monitoring**: Track file read/write/delete operations.
+- **Policy Enforcement**: Enforce rules to restrict unauthorized data activities.
+- **Removable Media Protection**: Control or restrict USB access and file transfers to external devices.
+- **File & Document Tracking**: Monitor sensitive files throughout their lifecycle.
+- **File Transfer Tracking**: Track file transfers across devices or to external systems.
+- **Content Filtering**: Use regex or patterns to detect and restrict sensitive content.
+- **Cloud Security**: Protect sensitive data in cloud services (e.g., Google Drive, OneDrive).
+- **Email Security**: Scan email content and attachments for sensitive data.
+- **Email Monitoring & Recording**: Monitor and log email activities for compliance.
+- **Web Filtering**: Restrict websites based on content or activity (e.g., data upload sites).
+- **Real-Time Alerts**: Notify admins of policy violations in real time.
+- **Reporting and Analytics**: Generate compliance and violation reports.
+- **File Parsing and Analysis**: Libraries like Apache Tika, Textract, or libmagic for content inspection.
+- **File Integrity Monitoring**: Detect unauthorized changes to sensitive files.
 
 ### **Endpoint Detection and Response (EDR)**
-- Process Monitoring
-- Network Activity Monitoring
-- Threat Detection
-- Malware Quarantine
-- Incident Response
-- Endpoint Isolation
+- **Process Monitoring**: Detect unauthorized or suspicious processes (e.g., malware, ransomware).
+- **Network Monitoring**: Track traffic for anomalies (e.g., malicious IPs).
+  - **Libraries**: `pcap`, `libpcap`, Scapy.
+- **Incident Response**: Enable actions like process termination, file quarantine, or endpoint isolation.
+- **Behavioral Rules**: Flag repeated failed login attempts or usage of hacking tools.
+- **Threat Anomaly Detection**: Monitor spikes in CPU or memory usage.
+- **Device Control**: Restrict USB devices, external drives, or unauthorized peripherals.
+- **File Integrity Monitoring**: Detect unauthorized changes to system files.
+- **Quarantine Management**: Isolate suspicious files or processes.
+- **Integration with Threat Feeds**: Use sources like VirusTotal, AbuseIPDB, and MITRE ATT&CK.
+- **Real-Time Alerts**: Notify administrators immediately of detected threats.
+- **Incident Logs**: Maintain logs of threats and remediation actions.
 
 ### **User and Entity Behavior Analytics (UEBA)**
-- Anomaly Detection
-- Baseline Behavior Profiling
-- Entity Behavior Analysis
-- Alert Management
+- **Baseline Behavior Analytics**: Establish normal patterns for users and devices.
+- **Anomaly Detection**: Identify deviations from baselines (e.g., unusual downloads).
+  - **Techniques**: Use machine learning models for pattern recognition.
+- **Insider Threat Detection**: Monitor privileged user activities for suspicious behavior.
+- **User Tracking**: Log session activities like logins, file accesses, and command executions.
+- **Entity Monitoring**: Track IoT devices and applications for unusual activity.
+- **Behavior Correlation**: Correlate user behavior with endpoint and network activities.
+- **Real-Time Alerts**: Notify admins when anomalies are detected.
 
 ### **User Behavior Analytics (UBA)**
-- Login/Logout Tracking
-- File Access Monitoring
-- Application Usage
-- Insider Threat Detection
+- **Employee Monitoring**: Track login/logout times, system usage, and idle sessions.
+- **File and Application Monitoring**: Monitor accessed files and executed applications.
+- **Smart Rules & Automated Alerts**: Alert on specific conditions (e.g., copying sensitive files to USB drives).
+- **Privilege Escalation Monitoring**: Alert on unauthorized admin access.
+- **Suspicious Email Activity**: Detect unusual email attachments or recipients.
+- **Access Control Violations**: Log unauthorized access attempts.
+
+### **Additional Monitoring and Reporting Features**
+- **Dashboard**: Provide real-time insights into system status (e.g., active agents, alerts).
+  - Display logs, trends, and incident summaries.
+- **Reports**: Generate compliance and activity reports.
+  - Include visualizations like graphs and heatmaps.
+- **Alert Word Notifications**: Trigger alerts for specific keywords (e.g., "Confidential", "Top Secret").
+- **Activity Monitoring**: Record all endpoint and user activities.
+- **Screen Capture**: Take snapshots of user activities for investigations.
+- **Stealth Mode**: Ensure agents operate without user visibility.
+- **Offline Functionality**: Allow agents to function even when disconnected from the backend.
 
 ---
 
@@ -62,59 +93,59 @@ The backend supports scalable APIs, a modular structure, and a centralized datab
 agent-backend/
 ├── src/
 │   ├── config/                  
-│   │   ├── db.js                 # Database connection
+│   │   ├── db.js                 # PostgreSQL database connection
+│   │   ├── env.js                # Environment variable configuration
 │   │   ├── logger.js             # Logging setup
-│   │   └── policyLoader.js       # Load initial policies into the database
+│   │   └── policyLoader.js       # Load default policies into the database
 │   ├── controllers/             
-│   │   ├── dlpController.js      # Handles DLP-specific routes
-│   │   ├── edrController.js      # Handles EDR-specific routes
-│   │   ├── uebaController.js     # Handles UEBA-specific routes
-│   │   ├── ubaController.js      # Handles UBA-specific routes
-│   │   ├── logController.js      # Handles generic log ingestion
-│   │   ├── alertController.js    # Handles alert-related actions
-│   │   ├── policyController.js   # Manages policy CRUD operations
-│   │   └── reportController.js   # Generates reports and analytics
+│   │   ├── dlpController.js      # Handles DLP-specific API requests
+│   │   ├── edrController.js      # Handles EDR-specific API requests
+│   │   ├── uebaController.js     # Handles UEBA-specific API requests
+│   │   ├── ubaController.js      # Handles UBA-specific API requests
+│   │   ├── logController.js      # Handles log ingestion
+│   │   ├── alertController.js    # Manages alert-related requests
+│   │   ├── actionController.js   # Manages actions sent to agents
+│   │   ├── policyController.js   # Manages policy creation and updates
+│   │   └── reportController.js   # Generates and fetches reports
 │   ├── middlewares/             
 │   │   ├── errorHandler.js       # Global error handling middleware
 │   │   ├── authenticate.js       # Authentication middleware
-│   │   └── validateRequest.js    # Validate incoming requests
+│   │   └── validateRequest.js    # Request validation middleware
 │   ├── models/                  
 │   │   ├── agentModel.js         # Schema for agents
-│   │   ├── dlpPolicyModel.js     # Schema for DLP policies
-│   │   ├── dlpLogModel.js        # Schema for DLP logs
-│   │   ├── dlpAlertModel.js      # Schema for DLP alerts
-│   │   ├── edrPolicyModel.js     # Schema for EDR policies
-│   │   ├── edrLogModel.js        # Schema for EDR logs
-│   │   ├── uebaPolicyModel.js    # Schema for UEBA baselines and rules
-│   │   ├── ubaLogModel.js        # Schema for UBA logs
-│   │   ├── alertModel.js         # Shared schema for all alerts
-│   │   ├── actionModel.js        # Shared schema for all actions
+│   │   ├── logModel.js           # Shared schema for logs
+│   │   ├── policyModel.js        # Shared schema for policies
+│   │   ├── alertModel.js         # Shared schema for alerts
+│   │   ├── actionModel.js        # Shared schema for actions
 │   │   ├── reportModel.js        # Schema for reports
 │   │   ├── userModel.js          # Schema for users (e.g., admin accounts)
-│   ├── routes/                  
-│   │   ├── dlpRoutes.js          # DLP-specific endpoints
-│   │   ├── edrRoutes.js          # EDR-specific endpoints
-│   │   ├── uebaRoutes.js         # UEBA-specific endpoints
-│   │   ├── ubaRoutes.js          # UBA-specific endpoints
-│   │   ├── logRoutes.js          # Log ingestion endpoints
-│   │   ├── alertRoutes.js        # Alert management endpoints
-│   │   └── reportRoutes.js       # Report generation endpoints
+│   ├── routes/                 
+│   │   ├── dlpRoutes.js          # DLP-specific API routes
+│   │   ├── edrRoutes.js          # EDR-specific API routes
+│   │   ├── uebaRoutes.js         # UEBA-specific API routes
+│   │   ├── ubaRoutes.js          # UBA-specific API routes
+│   │   ├── logRoutes.js          # Log ingestion API routes
+│   │   ├── alertRoutes.js        # Alert API routes
+│   │   ├── actionRoutes.js       # Action API routes
+│   │   └── reportRoutes.js       # Report generation API routes
 │   ├── services/                
-│   │   ├── dlpService.js         # Core logic for DLP
-│   │   ├── edrService.js         # Core logic for EDR
-│   │   ├── uebaService.js        # Core logic for UEBA
-│   │   ├── ubaService.js         # Core logic for UBA
-│   │   ├── logService.js         # Log processing logic
-│   │   ├── policyService.js      # Shared logic for policy management
-│   │   ├── alertService.js       # Shared logic for alert generation
-│   │   └── reportService.js      # Logic for report generation
+│   │   ├── logService.js         # Handles log ingestion and analysis
+│   │   ├── alertService.js       # Shared logic for generating alerts
+│   │   ├── actionService.js      # Core logic for agent actions
+│   │   ├── policyService.js      # Shared logic for managing policies
+│   │   ├── reportService.js      # Core logic for generating reports
+│   │   └── featureServices/      # Subdirectory for feature-specific logic
+│   │       ├── dlpService.js     # DLP-specific logic
+│   │       ├── edrService.js     # EDR-specific logic
+│   │       ├── uebaService.js    # UEBA-specific logic
+│   │       ├── ubaService.js     # UBA-specific logic
 │   ├── utils/                   
 │   │   ├── regexUtils.js         # Predefined regex patterns for sensitive data
-│   │   ├── fileUtils.js          # File handling utilities
-│   │   └── notificationUtils.js  # Utilities for sending notifications
+│   │   ├── fileUtils.js          # File handling utilities (e.g., parsing)
+│   │   └── notificationUtils.js  # Utilities for notifications
 │   ├── app.js                    # Main Express application setup
 │   └── server.js                 # Server entry point
-├── test/
+├── test/                         
 │   ├── controllers/              # Unit tests for controllers
 │   ├── services/                 # Unit tests for services
 │   ├── integration/              # Integration tests
