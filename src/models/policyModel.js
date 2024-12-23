@@ -4,7 +4,7 @@ const sequelize = require('../config/db');
 
 const Policy = sequelize.define('Policy', {
 
-    policyId: {
+    policy_id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
@@ -17,39 +17,52 @@ const Policy = sequelize.define('Policy', {
         description: 'Policy name (e.g., "Credit Card Detection")',
     },
 
-    type: {
+    feature: {
         type: DataTypes.STRING,
         allowNull: false,
-        description: 'regex, fileExtension'
+        validate: {
+            isIn: [['DLP', 'EDR', 'UEBA', 'UBA']]
+        },
+        description: 'Feature associated with the policy',
+    },
+
+    description: {
+        type: DataTypes.TEXT
     },
 
     rules: {
-        type: DataTypes.JSON,
+        type: DataTypes.JSONB,
         allowNull: false,
-        description: 'Stores the rules (e.g., regex patterns, thresholds)',
+        validate: {
+            isValidRules(value) {
+                // validation logic for rules structure
+                if (!value || typeof value !== 'object') {
+                    throw new Error('Invalid rules format');
+                }
+            }
+        }
     },
 
     action: {
         type: DataTypes.STRING,
         allowNull: false,
-        description: 'alert, block'
-    },
-
-    feature: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        description: 'Feature associated with the policy',
+        validate: {
+            isIn: [['alert', 'block', 'quarantine']]
+        }
     },
 
     created_at: {
         type: DataTypes.DATE,
-        allowNull: true,
+        defaultValue: DataTypes.NOW,
         description: 'Policy created at what time'
     },
 
 }, {
     tableName: 'policies',
     timeStamps: false,
+    indexes: [
+        { fields: ['feature'], name: 'idx_policy_feature' }
+    ]
 });
 
 module.exports = Policy;

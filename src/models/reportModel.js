@@ -4,28 +4,36 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db'); // Your database connection
 
 const Report = sequelize.define('Report', {
-    reportId: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        field: 'reportid' // Matching PostgreSQL column name
+    report_id: { 
+        type: DataTypes.INTEGER, 
+        primaryKey: true, 
+        autoIncrement: true 
     },
-    feature: {
-        type: DataTypes.STRING(20),
-        allowNull: false
+    feature: { 
+        type: DataTypes.STRING, 
+        allowNull: false,
+        validate: {
+            isIn: [['DLP', 'EDR', 'UEBA', 'UBA']]
+        }
     },
-    data: {
-        type: DataTypes.JSON,
-        allowNull: false
+    data: { 
+        type: DataTypes.JSONB, 
+        allowNull: false,
+        validate: {
+            notEmpty: true
+        }
     },
-    generatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-        field: 'generated_at'
+    generated_at: { 
+        type: DataTypes.DATE, 
+        defaultValue: DataTypes.NOW 
     }
-}, {
+},
+ {
     tableName: 'reports',
-    timestamps: false
+    timestamps: false,
+    indexes: [
+        { fields: ['feature', 'generated_at'], name: 'idx_report_feature_date' }
+    ]
 });
 
 module.exports = Report;

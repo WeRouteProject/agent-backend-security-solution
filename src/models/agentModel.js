@@ -1,14 +1,13 @@
 //Shared schema for all alerts
 
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+const { sequelize }= require('../config/db');
 
 const Agent = sequelize.define('Agent', {
-  agentId: {
+  agent_id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
-    allowNull: false,
   },
   name: {
     type: DataTypes.STRING,
@@ -18,12 +17,21 @@ const Agent = sequelize.define('Agent', {
   os: {
     type: DataTypes.STRING,
     allowNull: true,
-    description: 'Operating system of the agent (e.g., Windows, Linux)',
+    validate: {
+      isIn: [['Windows', 'Linux', 'MacOS']]
+  }
   },
   features: {
-    type: DataTypes.JSON,
+    type: DataTypes.JSONB,
     allowNull: true,
-    description: 'Features enabled on the agent (e.g., ["DLP", "EDR"])',
+    validate: {
+      isValidFeatures(value) {
+          const validFeatures = ['DLP', 'EDR', 'UEBA', 'UBA'];
+          if (!Array.isArray(value) || !value.every(f => validFeatures.includes(f))) {
+              throw new Error('Invalid features');
+          }
+      }
+  }
   },
   status: {
     type: DataTypes.STRING,
@@ -34,14 +42,19 @@ const Agent = sequelize.define('Agent', {
     },
     description: 'Current status of the agent',
   },
-  lastSeen: {
+  last_seen: {
     type: DataTypes.DATE,
     allowNull: true,
+    defaultValue: DataTypes.NOW,
     description: 'Last communication time of the agent',
   },
 }, {
   tableName: 'agents',
   timestamps: false,
+  indexes: [{
+    fields: ['status', 'last_seen'],
+    name: 'idx_agent_status'
+}]
 });
 
 module.exports = Agent;

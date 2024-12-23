@@ -3,44 +3,59 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 
 const Action = sequelize.define('Action', {
-    actionId: {
+    action_id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
-        allowNull: false
     },
-    agentId: {
+    agent_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
         references: {
             model: 'agents',
-            key: 'agentId'
+            key: 'agent_id'
         },
-        onDelete: 'CASCADE',
     },
     feature: {
         type: DataTypes.STRING,
         allowNull: false,
-        description: 'e.g., DLP, EDR',
+        validate: {
+            isIn: [['DLP', 'EDR', 'UEBA', 'UBA']]
+        }
     },
-    actionType: {
+    action_type: {
         type: DataTypes.STRING,
         allowNull: false,
-        description: 'e.g., blockFile, terminateProcess',
+        validate: {
+            isIn: [['blockFile', 'terminateProcess', 'quarantine']]
+        },
     },
     details: {
-        type: DataTypes.JSON,
+        type: DataTypes.JSONB,
         allowNull: false,
         description: 'Action-specific details (e.g., file name, process name)',
     },
-    timestamp: {
-        type: DataTypes.DATE,
-        allowNull: true,
-        description: 'Action time stamp',
+    status: { 
+        type: DataTypes.STRING, 
+        defaultValue: 'pending',
+        validate: {
+            isIn: [['pending', 'completed', 'failed']]
+        }
     },
+    executed_at: { 
+        type: DataTypes.DATE 
+    },
+    created_at: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
 },
     {
         tableName: 'actions',
-        timestamps: false
+        timestamps: false,
+        indexes: [
+            {
+                fields: ['agent_id'],
+                name: 'idx_agent_actions'
+            }
+           ] 
     });
 
 module.exports = Action;
