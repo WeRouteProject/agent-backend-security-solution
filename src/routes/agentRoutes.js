@@ -6,5 +6,6 @@ const validateRequest = require('../middlewares/validateRequest');
 
 // Route to register a new agent
 router.post('/register', validateRequest(agentValidator), agentController.registerAgentController);
+router.put('/updateAgentStatus/:id/status', agentController.updateAgentStatus);
 
 module.exports = router;

@@ -18,3 +18,18 @@ exports.registerAgentController = async (request, response) => {
         });
     }
 };
+
+exports.updateAgentStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status, features } = req.body;
+        const updatedAgent = await agentService.updateStatus({
+            agent_id: id,
+            status,
+            features
+        });
+        res.json(updatedAgent);
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+};

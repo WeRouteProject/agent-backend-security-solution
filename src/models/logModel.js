@@ -1,7 +1,7 @@
 // Shared schema for logs
 
 const {DataTypes} = require('sequelize');
-const sequelize = require('../config/db');
+const { sequelize } = require('../config/db');
 
 const Log = sequelize.define('Log', {
     log_id: {
@@ -26,7 +26,7 @@ const Log = sequelize.define('Log', {
         type: DataTypes.STRING(50),
         allowNull: false,
         validate: {
-            isIn: [['fileAccess', 'processExecution', 'networkActivity']],
+            isIn: [['fileAccess', 'processExecution', 'networkActivity', 'statusUpdate']],
         },
         description: 'Type of log event',
     },
@@ -96,7 +96,7 @@ const Log = sequelize.define('Log', {
 },
 {
    tableName: 'logs',
-   timeStamps: false,
+   timestamps: false,
    indexes: [
     { fields: ['agent_id'], name: 'idx_log_agent' },
     { fields: ['timestamp'], name: 'idx_log_timestamp' },

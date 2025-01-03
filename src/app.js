@@ -6,6 +6,7 @@ const port = 3000;
 const validateRequest = require('./middlewares/validateRequest');
 const { body } = require('express-validator');
 const agentRoutes = require('../src/routes/agentRoutes');
+const logIngestRoutes= require('../src/routes/logRoutes');
 
 app.use(express.json());
 
@@ -83,6 +84,7 @@ app.post(
 );
 
 app.use('/api/agents', agentRoutes);
+app.use('/api/logs', logIngestRoutes);
 initializeApp();
 
 module.exports = app;
