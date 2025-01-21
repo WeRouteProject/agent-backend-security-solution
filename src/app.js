@@ -7,6 +7,7 @@ const validateRequest = require('./middlewares/validateRequest');
 const { body } = require('express-validator');
 const agentRoutes = require('../src/routes/agentRoutes');
 const logIngestRoutes= require('../src/routes/logRoutes');
+const policyRoutes = require('../src/routes/policyRoutes');
 
 app.use(express.json());
 
@@ -85,6 +86,7 @@ app.post(
 
 app.use('/api/agents', agentRoutes);
 app.use('/api/logs', logIngestRoutes);
+app.use('/api/policy', policyRoutes);
 initializeApp();
 
 module.exports = app;

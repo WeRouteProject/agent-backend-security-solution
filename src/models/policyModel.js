@@ -1,6 +1,6 @@
 // Shared schema for policies
 const { DataTypes, INTEGER } = require('sequelize');
-const sequelize = require('../config/db');
+const { sequelize }= require('../config/db');
 
 const Policy = sequelize.define('Policy', {
 
@@ -59,7 +59,7 @@ const Policy = sequelize.define('Policy', {
 
 }, {
     tableName: 'policies',
-    timeStamps: false,
+    timestamps: false,
     indexes: [
         { fields: ['feature'], name: 'idx_policy_feature' }
     ]
