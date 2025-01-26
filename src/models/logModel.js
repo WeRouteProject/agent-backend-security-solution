@@ -53,6 +53,13 @@ const Log = sequelize.define('Log', {
     file_name: { type: DataTypes.STRING },
     file_path: { type: DataTypes.TEXT },
     file_hash: { type: DataTypes.STRING },
+    file_content: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        get() {
+            return this.getDataValue('file_content') || null;
+        }
+    },
     src_ip: { 
         type: DataTypes.STRING,
         validate: {

@@ -14,6 +14,7 @@ const ingestLogs = async (req, res) => {
             // File access fields
             file_name,
             file_path,
+            file_content,
             file_hash,
             // Process fields
             process_id,
@@ -36,6 +37,7 @@ const ingestLogs = async (req, res) => {
             metadata,
             file_name,
             file_path,
+            file_content,
             file_hash,
             process_id,
             process_name,

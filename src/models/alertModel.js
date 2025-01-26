@@ -1,6 +1,6 @@
 //Shared schema for all alerts
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+const { sequelize } = require('../config/db');
 
 const Alert = sequelize.define('Alert', {
     alert_id: { 
@@ -54,7 +54,7 @@ const Alert = sequelize.define('Alert', {
 },
 {
     tableName: 'alerts',
-    timeStamps: false,
+    timestamps: false,
     indexes: [
         {
             fields: ['agent_id'],
