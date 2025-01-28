@@ -48,6 +48,48 @@ const Agent = sequelize.define('Agent', {
     defaultValue: DataTypes.NOW,
     description: 'Last communication time of the agent',
   },
+
+  device_name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    description: 'Device name for the agent'
+},
+organization: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    description: 'Organization the agent belongs to'
+},
+environment: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+        isIn: [['production', 'staging', 'development', 'testing']]
+    }
+},
+location: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    description: 'Physical/Geographic location'
+},
+admin_email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+        isEmail: true
+    }
+},
+policy_group: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    description: 'Policy group assigned to agent'
+},
+license_key: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+    description: 'Unique license key for the agent'
+}
+
 }, {
   tableName: 'agents',
   timestamps: false,
