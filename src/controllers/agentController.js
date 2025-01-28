@@ -12,7 +12,7 @@ exports.registerAgentController = async (request, response) => {
         });
     } catch (error) {
         console.error('Error registering agent:', error.message);
-        res.status(500).json({
+        response.status(500).json({
             message: 'Internal server error while registering agent',
             error: error.message,
         });

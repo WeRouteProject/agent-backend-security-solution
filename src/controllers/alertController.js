@@ -87,10 +87,10 @@ const updateAlertStatus = async (req, res) => {
 
 const getAlertsBySeverity = async (req, res) => {
     try {
-        const { severity } = req.params;
+        const { level } = req.params;
         const validSeverities = ['low', 'medium', 'high', 'critical'];
         
-        if (!validSeverities.includes(severity)) {
+        if (!validSeverities.includes(level)) {
             return res.status(400).json({
                 success: false,
                 error: 'Invalid severity level'
@@ -98,7 +98,7 @@ const getAlertsBySeverity = async (req, res) => {
         }
 
         const alerts = await Alert.findAll({
-            where: { severity },
+            where: { severity: level },
             order: [['created_at', 'DESC']]
         });
 

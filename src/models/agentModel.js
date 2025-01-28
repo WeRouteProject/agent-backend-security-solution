@@ -26,7 +26,7 @@ const Agent = sequelize.define('Agent', {
     allowNull: true,
     validate: {
       isValidFeatures(value) {
-          const validFeatures = ['DLP', 'EDR', 'UEBA', 'UBA'];
+          const validFeatures = ['DLP', 'EDR', 'UBEA', 'UBA'];
           if (!Array.isArray(value) || !value.every(f => validFeatures.includes(f))) {
               throw new Error('Invalid features');
           }

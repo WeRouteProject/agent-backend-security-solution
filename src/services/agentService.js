@@ -30,8 +30,6 @@ const registerAgent = async ({ name, os, features }) => {
     }
 };
 
-module.exports = { registerAgent };
-
 const updateStatus = async ({ agent_id, status, features }) => {
 
     if (!agent_id || !status || !features ) {
@@ -77,4 +75,4 @@ const updateStatus = async ({ agent_id, status, features }) => {
     }
 }
 
-module.exports = { updateStatus };
+module.exports = { registerAgent, updateStatus };
