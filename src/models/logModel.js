@@ -11,7 +11,8 @@ const Log = sequelize.define('Log', {
     },
     timestamp: { 
         type: DataTypes.DATE, 
-        allowNull: false 
+        allowNull: false,
+        defaultValue: DataTypes.NOW
     },
     agent_id: {
         type: DataTypes.INTEGER,
@@ -26,7 +27,7 @@ const Log = sequelize.define('Log', {
         type: DataTypes.STRING(50),
         allowNull: false,
         validate: {
-            isIn: [['fileAccess', 'processExecution', 'networkActivity', 'statusUpdate']],
+            isIn: [['fileAccess', 'processExecution', 'networkActivity', 'statusUpdate', 'emailActivity', 'usbActivity', 'clipboardActivity']],
         },
         description: 'Type of log event',
     },
@@ -38,60 +39,60 @@ const Log = sequelize.define('Log', {
         },
         description: 'Feature generating the log',
     },
-    user_id: { 
-        type: DataTypes.STRING 
-    },
-    process_id: { 
-        type: DataTypes.STRING 
-    },
-    process_name: { 
-        type: DataTypes.STRING 
-    },
-    process_path: { 
-        type: DataTypes.TEXT 
-    },
-    file_name: { type: DataTypes.STRING },
-    file_path: { type: DataTypes.TEXT },
-    file_hash: { type: DataTypes.STRING },
-    file_content: {
-        type: DataTypes.TEXT,
-        allowNull: true,
-        get() {
-            return this.getDataValue('file_content') || null;
-        }
-    },
-    src_ip: { 
-        type: DataTypes.STRING,
-        validate: {
-            isIP: true,
-          },
-    },
-    src_port: { 
-        type: DataTypes.INTEGER,
-        validate: {
-            min: 0,
-            max: 65535
-        }
-    },
-    dest_ip: { 
-        type: DataTypes.STRING,
-        validate: {
-            isIP: true,
-          },
-    },
-    dest_port: {
-         type: DataTypes.INTEGER,
-         validate: {
-            min: 0,
-            max: 65535
-        }
-        },
-    protocol: { 
-        type: DataTypes.STRING,
-        validate: {
-            isIn: [['TCP', 'UDP', 'HTTP', 'HTTPS', 'FTP']]
-        }
-    },
+    // user_id: { 
+    //     type: DataTypes.STRING 
+    // },
+    // process_id: { 
+    //     type: DataTypes.STRING 
+    // },
+    // process_name: { 
+    //     type: DataTypes.STRING 
+    // },
+    // process_path: { 
+    //     type: DataTypes.TEXT 
+    // },
+    // file_name: { type: DataTypes.STRING },
+    // file_path: { type: DataTypes.TEXT },
+    // file_hash: { type: DataTypes.STRING },
+    // file_content: {
+    //     type: DataTypes.TEXT,
+    //     allowNull: true,
+    //     get() {
+    //         return this.getDataValue('file_content') || null;
+    //     }
+    // },
+    // src_ip: { 
+    //     type: DataTypes.STRING,
+    //     validate: {
+    //         isIP: true,
+    //       },
+    // },
+    // src_port: { 
+    //     type: DataTypes.INTEGER,
+    //     validate: {
+    //         min: 0,
+    //         max: 65535
+    //     }
+    // },
+    // dest_ip: { 
+    //     type: DataTypes.STRING,
+    //     validate: {
+    //         isIP: true,
+    //       },
+    // },
+    // dest_port: {
+    //      type: DataTypes.INTEGER,
+    //      validate: {
+    //         min: 0,
+    //         max: 65535
+    //     }
+    //     },
+    // protocol: { 
+    //     type: DataTypes.STRING,
+    //     validate: {
+    //         isIn: [['TCP', 'UDP', 'HTTP', 'HTTPS', 'FTP']]
+    //     }
+    // },
     alert_level: { 
         type: DataTypes.STRING,
         validate: {
@@ -99,7 +100,8 @@ const Log = sequelize.define('Log', {
         }
     },
     metadata: { type: DataTypes.JSONB },
-    created_at: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
+    created_at: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
+
 },
 {
    tableName: 'logs',

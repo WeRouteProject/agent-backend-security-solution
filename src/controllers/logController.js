@@ -25,7 +25,15 @@ const ingestLogs = async (req, res) => {
             src_port,
             dest_ip,
             dest_port,
-            protocol
+            protocol,
+            // Email fields
+            email_sender,
+            email_recipients,
+            email_subject,
+            email_content,
+            has_attachments,
+            attachment_names,
+            attachment_count
         } = req.body;
 
         const logData = {
@@ -47,8 +55,17 @@ const ingestLogs = async (req, res) => {
             dest_ip,
             dest_port,
             protocol,
+            email_sender,
+            email_recipients,
+            email_subject,
+            email_content,
+            has_attachments,
+            attachment_names,
+            attachment_count
 
         };
+
+        console.log('Request body:', req.body);
 
         const log = await logService.create(logData);
         res.status(201).json({

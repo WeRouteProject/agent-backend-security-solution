@@ -5,21 +5,25 @@ const alertService = require('../services/alertService');
 
 const getAlerts = async (req, res) => {
     try {
-        console.log('Fetching alerts...');
-        const alerts = await Alert.findAll({
+        const { timeRange, agentId, policyId } = req.query;
+        let query = {
             order: [['created_at', 'DESC']]
-        });
-        console.log('Found alerts:', alerts);
-        res.json({
-            success: true,
-            data: alerts
-        });
+        };
+
+        if (timeRange) {
+            query.where = {
+                created_at: {
+                    [Op.gte]: new Date(Date.now() - timeRange)
+                }
+            };
+        }
+        if (agentId) query.where = { ...query.where, agent_id: agentId };
+        if (policyId) query.where = { ...query.where, policy_id: policyId };
+
+        const alerts = await Alert.findAll(query);
+        res.json({ success: true, data: alerts });
     } catch (error) {
-        console.error('Error fetching alerts:', error);
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
+        res.status(500).json({ success: false, error: error.message });
     }
 };
 
@@ -47,70 +51,38 @@ const getAlertById = async (req, res) => {
 const updateAlertStatus = async (req, res) => {
     try {
         const { status, notes } = req.body;
-        const alert = await Alert.findByPk(req.params.id);
-        
-        if (!alert) {
-            return res.status(404).json({
-                success: false,
-                error: 'Alert not found'
-            });
-        }
-
-        const validStatuses = ['new', 'acknowledged', 'resolved'];
-        if (!validStatuses.includes(status)) {
-            return res.status(400).json({
-                success: false,
-                error: 'Invalid status'
-            });
-        }
-
-        await alert.update({
+        const updatedAlert = await alertService.updateStatus(req.params.id, {
             status,
-            details: {
-                ...alert.details,
-                notes,
-                status_updated_at: new Date()
-            }
+            notes,
+            updated_by: req.user?.id || 'system'
         });
-
-        res.json({
-            success: true,
-            data: alert
-        });
+        res.json({ success: true, data: updatedAlert });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
+        res.status(500).json({ success: false, error: error.message });
     }
 };
 
+// Add timeRangeStart and timeRangeEnd filters
 const getAlertsBySeverity = async (req, res) => {
     try {
         const { level } = req.params;
-        const validSeverities = ['low', 'medium', 'high', 'critical'];
+        const { timeRangeStart, timeRangeEnd } = req.query;
         
-        if (!validSeverities.includes(level)) {
-            return res.status(400).json({
-                success: false,
-                error: 'Invalid severity level'
-            });
-        }
-
-        const alerts = await Alert.findAll({
+        const query = {
             where: { severity: level },
             order: [['created_at', 'DESC']]
-        });
+        };
 
-        res.json({
-            success: true,
-            data: alerts
-        });
+        if (timeRangeStart && timeRangeEnd) {
+            query.where.created_at = {
+                [Op.between]: [new Date(timeRangeStart), new Date(timeRangeEnd)]
+            };
+        }
+
+        const alerts = await Alert.findAll(query);
+        res.json({ success: true, data: alerts });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
+        res.status(500).json({ success: false, error: error.message });
     }
 };
 

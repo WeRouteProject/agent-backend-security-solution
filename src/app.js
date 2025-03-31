@@ -1,5 +1,7 @@
 const express = require('express');
 const { sequelize, connectToDatabase } = require('./config/db');
+const dlpRoutes = require('./routes/dlpRoutes');
+
 //const  Log = require('./models/logModel');  // Correct import
 const app = express();
 const port = 3000;
@@ -89,6 +91,7 @@ app.use('/api/agents', agentRoutes);
 app.use('/api/logs', logIngestRoutes);
 app.use('/api/policy', policyRoutes);
 app.use('/api/alerts', alertRoutes);
+app.use('/api/dlp', dlpRoutes);
 initializeApp();
 
 module.exports = app;

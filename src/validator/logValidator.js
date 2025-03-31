@@ -3,7 +3,7 @@ const { body, check } = require('express-validator');
 
 const commonValidations = [
     body('agent_id').isInt().notEmpty(),
-    body('event_type').isIn(['fileAccess', 'processExecution', 'networkActivity']),
+    body('event_type').isIn(['fileAccess', 'processExecution', 'networkActivity', 'emailActivity']),
     body('feature').isIn(['DLP', 'EDR', 'UEBA', 'UBA']),
     body('metadata').optional().isObject()
 ];
@@ -33,6 +33,17 @@ const networkValidations = [
     body('alert_level').optional().isIn(['low', 'medium', 'high', 'critical'])
 ];
 
+const emailValidations = [
+    body('email_sender').notEmpty().isString(),
+    body('email_recipients').isArray(),
+    body('email_subject').notEmpty().isString(),
+    body('email_content').optional().isString(),
+    body('has_attachments').optional().isBoolean(),
+    body('attachment_names').optional().isArray(),
+    body('attachment_count').optional().isInt({ min: 0 }),
+    body('alert_level').optional().isIn(['low', 'medium', 'high', 'critical'])
+];
+
 const validateLogIngestion = [
     ...commonValidations,
     check().custom((value, { req }) => {
@@ -40,6 +51,9 @@ const validateLogIngestion = [
             case 'fileAccess':
                 return fileAccessValidations.every(validation => 
                     validation.run(req));
+            case 'emailActivity':
+                return emailValidations.every(validation => 
+                    validation.run(req));        
             case 'processExecution':
                 return processValidations.every(validation => 
                     validation.run(req));

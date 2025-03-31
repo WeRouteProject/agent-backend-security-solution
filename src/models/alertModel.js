@@ -47,6 +47,36 @@ const Alert = sequelize.define('Alert', {
             isIn: [['new', 'acknowledged', 'resolved', 'closed']]
         }
     },
+    details: {
+        type: DataTypes.JSONB,
+        allowNull: true,
+        defaultValue: {},
+        validate: {
+            isValidDetails(value) {
+                const requiredFields = ['violation_type', 'resource_info'];
+                if (!value || !requiredFields.every(field => value.hasOwnProperty(field))) {
+                    throw new Error('Missing required detail fields');
+                }
+            }
+        }
+    },
+    status_history: {
+        type: DataTypes.JSONB,
+        defaultValue: [],
+        allowNull: false
+    },
+    acknowledged_at: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+    resolved_at: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+    closed_at: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
     created_at: { 
         type: DataTypes.DATE, 
         defaultValue: DataTypes.NOW 
